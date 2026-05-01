@@ -16,15 +16,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - run: npm install
       - run: pip install anthropic python-dotenv requests
-      - run: npx playwright install chromium --with-deps
-
-      - name: שלוף נתונים
-        env:
-          LEUMI_USERNAME: ${{ secrets.LEUMI_USERNAME }}
-          LEUMI_PASSWORD: ${{ secrets.LEUMI_PASSWORD }}
-        run: node scrape.mjs
 
       - name: שלח סיכום שבועי וטיפ
         env:
