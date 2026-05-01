@@ -12,6 +12,37 @@ from agents.recurring_summary import build_recurring_summary
 
 load_dotenv()
 
+# ── הגנת סיסמה ────────────────────────────────────────────
+def check_password():
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+
+    if st.session_state.authenticated:
+        return True
+
+    st.markdown("""
+    <div style="max-width:400px;margin:100px auto;text-align:center">
+        <h1 style="color:white">💰 מעקב פיננסי</h1>
+        <p style="color:#888">הכנס סיסמה כדי להמשיך</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        password = st.text_input("סיסמה", type="password", label_visibility="collapsed",
+                                  placeholder="הכנס סיסמה...")
+        if st.button("כניסה", use_container_width=True):
+            correct = os.environ.get("DASHBOARD_PASSWORD", "finance2024")
+            if password == correct:
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("סיסמה שגויה")
+    return False
+
+if not check_password():
+    st.stop()
+
 st.set_page_config(
     page_title="מעקב פיננסי — גל",
     page_icon="💰",
