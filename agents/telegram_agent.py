@@ -1,6 +1,7 @@
 import os
 import requests
 from .base_agent import BaseAgent
+from .whatsapp_sender import send_whatsapp
 from datetime import date
 
 class TelegramAgent(BaseAgent):
@@ -76,10 +77,12 @@ class TelegramAgent(BaseAgent):
                 }]]
             }
         response = requests.post(url, json=payload)
+        send_whatsapp(message)
         return response.json().get("ok", False)
 
     def send_raw(self, text: str):
         url = f"https://api.telegram.org/bot{self.token}/sendMessage"
         payload = {"chat_id": self.chat_id, "text": text, "parse_mode": "HTML"}
         response = requests.post(url, json=payload)
+        send_whatsapp(text)
         return response.json().get("ok", False)

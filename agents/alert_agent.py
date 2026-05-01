@@ -4,6 +4,7 @@ import requests
 from datetime import date, datetime, timedelta
 from collections import defaultdict
 from .base_agent import BaseAgent
+from .whatsapp_sender import send_whatsapp
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,6 +28,7 @@ class AlertAgent(BaseAgent):
     def send(self, text: str):
         url = f"https://api.telegram.org/bot{self.token}/sendMessage"
         requests.post(url, json={"chat_id": self.chat_id, "text": text, "parse_mode": "HTML"})
+        send_whatsapp(text)
 
     # ── 1. התראת הוצאה גדולה ──────────────────────────────
 
