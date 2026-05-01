@@ -1,0 +1,46 @@
+name: דוח פיננסי יומי
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # כל יום 08:00 שעון ישראל (UTC+2)
+  workflow_dispatch:       # הפעלה ידנית מגיטהאב
+
+jobs:
+  daily-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: התקן Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: התקן Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: התקן תלויות Node
+        run: npm install
+
+      - name: התקן תלויות Python
+        run: pip install anthropic python-dotenv requests
+
+      - name: התקן Playwright
+        run: npx playwright install chromium --with-deps
+
+      - name: שלוף נתונים מלאומי
+        env:
+          LEUMI_USERNAME: ${{ secrets.LEUMI_USERNAME }}
+          LEUMI_PASSWORD: ${{ secrets.LEUMI_PASSWORD }}
+        run: node scrape.mjs
+
+      - name: שלח דוח לטלגרם
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DASHBOARD_URL: ${{ secrets.DASHBOARD_URL }}
+        run: python3 telegram_report.py
