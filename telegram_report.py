@@ -32,7 +32,7 @@ def load_transactions():
     with open("transactions.json", "r", encoding="utf-8") as f:
         return json.load(f)
 
-def build_report(data, budget=8000):
+def build_report(data, budget=32000):
     all_txns = []
     for account in data["accounts"]:
         for txn in account["txns"]:

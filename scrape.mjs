@@ -15,8 +15,8 @@ console.log('🔄 מתחבר ללאומי...');
 
 const scraper = createScraper({
   companyId: CompanyTypes.leumi,
-  startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 2, 1), // 3 חודשים אחורה
-  showBrowser: true,
+  startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 5, 1), // 6 חודשים אחורה
+  showBrowser: false,
 });
 
 try {

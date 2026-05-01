@@ -2,8 +2,8 @@ name: דוח פיננסי יומי
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # כל יום 08:00 שעון ישראל (UTC+2)
-  workflow_dispatch:       # הפעלה ידנית מגיטהאב
+    - cron: '0 6 * * *'  # 08:00 שעון ישראל
+  workflow_dispatch:
 
 jobs:
   daily-report:
@@ -12,13 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: התקן Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      - name: התקן Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
@@ -37,10 +35,18 @@ jobs:
           LEUMI_PASSWORD: ${{ secrets.LEUMI_PASSWORD }}
         run: node scrape.mjs
 
+      - name: שמור transactions.json לריפו
+        run: |
+          git config user.name "finance-bot"
+          git config user.email "bot@finance.local"
+          git add transactions.json
+          git diff --staged --quiet || git commit -m "update transactions $(date +%Y-%m-%d)"
+          git push
+
       - name: שלח דוח לטלגרם
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           DASHBOARD_URL: ${{ secrets.DASHBOARD_URL }}
-        run: python3 telegram_report.py
+        run: python3 orchestrator.py
