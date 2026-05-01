@@ -11,7 +11,7 @@ class ScraperAgent(BaseAgent):
             system_prompt="""אתה Lior, אחראי על שליפת נתונים פיננסיים מהבנק.
 תפקידך: לשלוף נתונים, לנקות אותם ולהעביר אותם מוכנים לניתוח."""
         )
-        self.transactions_path = "/Users/galshushan/finance-agent/transactions.json"
+        self.transactions_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "transactions.json")
 
     def scrape(self) -> bool:
         result = subprocess.run(

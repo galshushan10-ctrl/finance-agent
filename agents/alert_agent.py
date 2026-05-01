@@ -61,7 +61,7 @@ class AlertAgent(BaseAgent):
         pct = (total / BUDGET) * 100
 
         thresholds = {70: "🟡", 85: "🟠", 95: "🔴"}
-        state_file = "/Users/galshushan/finance-agent/.budget_alerts_sent.json"
+        state_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".budget_alerts_sent.json")
 
         try:
             with open(state_file) as f:

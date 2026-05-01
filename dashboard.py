@@ -92,7 +92,7 @@ div[data-testid="stButton"] button {
 BUDGET = 32000
 
 def load_data():
-    path = "/Users/galshushan/finance-agent/transactions.json"
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "transactions.json")
     if not os.path.exists(path):
         return None
     with open(path, encoding="utf-8") as f:
