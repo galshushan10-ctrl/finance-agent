@@ -23,21 +23,18 @@ jobs:
       - name: התקן תלויות Node
         run: npm install
 
+      - name: התקן Playwright + Chromium
+        run: npx playwright install chromium --with-deps
+
       - name: התקן תלויות Python
         run: pip install anthropic python-dotenv requests
-
-      - name: התקן תלויות מערכת
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser xvfb libgbm-dev
 
       - name: שלוף נתונים מלאומי
         env:
           LEUMI_USERNAME: ${{ secrets.LEUMI_USERNAME }}
           LEUMI_PASSWORD: ${{ secrets.LEUMI_PASSWORD }}
           CI: true
-          PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
-        run: xvfb-run --auto-servernum node scrape.mjs
+        run: node scrape.mjs
 
       - name: שמור נתונים לגיטהאב
         run: |

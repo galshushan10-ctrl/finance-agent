@@ -13,25 +13,14 @@ if (!credentials.username || !credentials.password) {
 
 console.log('🔄 מתחבר ללאומי...');
 
-const isCI = process.env.CI === 'true';
-
 const scraperConfig = {
   companyId: CompanyTypes.leumi,
   startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 5, 1),
   showBrowser: false,
+  playwrightConfig: {
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+  },
 };
-
-if (isCI) {
-  scraperConfig.puppeteerConfig = {
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-    ],
-  };
-}
 
 const scraper = createScraper(scraperConfig);
 
