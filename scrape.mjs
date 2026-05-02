@@ -17,16 +17,12 @@ const scraperConfig = {
   companyId: CompanyTypes.leumi,
   startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 5, 1),
   showBrowser: false,
-  puppeteerConfig: {
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-      '--no-zygote',
-      '--single-process',
-    ],
-  },
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-gpu',
+  ],
 };
 
 const scraper = createScraper(scraperConfig);
