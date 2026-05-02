@@ -47,11 +47,12 @@ def build_recurring_summary(transactions: list) -> dict:
 
     by_desc = defaultdict(list)
     for t in transactions:
+        date_str = str(t['date'])[:10]
         by_desc[t['description'].strip()].append({
-            "month": t['date'][:7],
-            "day": int(t['date'][8:10]),
+            "month": date_str[:7],
+            "day": int(date_str[8:10]),
             "amount": t['amount'],
-            "date": t['date'],
+            "date": date_str,
             "memo": t.get('memo', ''),
         })
 
