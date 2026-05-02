@@ -2,7 +2,7 @@ name: דוח פיננסי יומי
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # 08:00 שעון ישראל
+    - cron: '0 6 * * *'  # 08:00 שעון ישראל — אחרי שה-Mac כבר שלף ודחף
   workflow_dispatch:
 
 jobs:
@@ -12,41 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: התקן תלויות Node
-        run: npm install
+      - run: pip install anthropic python-dotenv requests
 
-      - name: התקן תלויות Python
-        run: pip install anthropic python-dotenv requests
-
-      - name: התקן Playwright
-        run: npx playwright install chromium --with-deps
-
-      - name: שלוף נתונים מלאומי
-        env:
-          LEUMI_USERNAME: ${{ secrets.LEUMI_USERNAME }}
-          LEUMI_PASSWORD: ${{ secrets.LEUMI_PASSWORD }}
-        run: node scrape.mjs
-
-      - name: שמור transactions.json לריפו
-        run: |
-          git config user.name "finance-bot"
-          git config user.email "bot@finance.local"
-          git add transactions.json
-          git diff --staged --quiet || git commit -m "update transactions $(date +%Y-%m-%d)"
-          git push
-
-      - name: שלח דוח לטלגרם
+      - name: שלח דוח יומי
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GREENAPI_INSTANCE_ID: ${{ secrets.GREENAPI_INSTANCE_ID }}
+          GREENAPI_TOKEN: ${{ secrets.GREENAPI_TOKEN }}
+          WHATSAPP_PHONE: ${{ secrets.WHATSAPP_PHONE }}
           DASHBOARD_URL: ${{ secrets.DASHBOARD_URL }}
         run: python3 orchestrator.py
