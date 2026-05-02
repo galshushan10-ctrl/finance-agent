@@ -23,9 +23,6 @@ jobs:
       - name: התקן תלויות Node
         run: npm install
 
-      - name: התקן Playwright + Chromium
-        run: npx playwright install chromium --with-deps
-
       - name: התקן תלויות Python
         run: pip install anthropic python-dotenv requests
 
@@ -33,7 +30,7 @@ jobs:
         env:
           LEUMI_USERNAME: ${{ secrets.LEUMI_USERNAME }}
           LEUMI_PASSWORD: ${{ secrets.LEUMI_PASSWORD }}
-          CI: true
+          PUPPETEER_DISABLE_DEV_SHM_USAGE: 'true'
         run: node scrape.mjs
 
       - name: שמור נתונים לגיטהאב
