@@ -1,45 +1,24 @@
 name: דוח פיננסי יומי
 
 on:
-  schedule:
-    - cron: '0 6 * * *'  # 08:00 שעון ישראל
+  push:
+    paths:
+      - 'transactions.json'
   workflow_dispatch:
 
 jobs:
-  daily-report:
+  send-report:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: התקן תלויות Node
-        run: npm install
-
       - name: התקן תלויות Python
         run: pip install anthropic python-dotenv requests
-
-      - name: שלוף נתונים מלאומי
-        env:
-          LEUMI_USERNAME: ${{ secrets.LEUMI_USERNAME }}
-          LEUMI_PASSWORD: ${{ secrets.LEUMI_PASSWORD }}
-          PUPPETEER_DISABLE_DEV_SHM_USAGE: 'true'
-        run: node scrape.mjs
-
-      - name: שמור נתונים לגיטהאב
-        run: |
-          git config user.name "finance-bot"
-          git config user.email "bot@finance.local"
-          git add transactions.json
-          git diff --staged --quiet || git commit -m "update transactions $(date +%Y-%m-%d)"
-          git push
 
       - name: שלח דוח לטלגרם ווואטסאפ
         env:
