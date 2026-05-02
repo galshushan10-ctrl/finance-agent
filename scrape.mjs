@@ -15,20 +15,25 @@ console.log('🔄 מתחבר ללאומי...');
 
 const isCI = process.env.CI === 'true';
 
-const scraper = createScraper({
+const scraperConfig = {
   companyId: CompanyTypes.leumi,
   startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 5, 1),
   showBrowser: false,
-  puppeteerConfig: {
-    args: isCI ? [
+};
+
+if (isCI) {
+  scraperConfig.puppeteerConfig = {
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
+    args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
-      '--single-process',
-    ] : [],
-  },
-});
+    ],
+  };
+}
+
+const scraper = createScraper(scraperConfig);
 
 try {
   const result = await scraper.scrape(credentials);
