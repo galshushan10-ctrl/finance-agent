@@ -1,7 +1,6 @@
 import streamlit as st
 import json
 import os
-import subprocess
 from datetime import datetime, date
 from dotenv import load_dotenv
 import anthropic
@@ -174,24 +173,13 @@ data = load_data()
 
 # ── header ─────────────────────────────────────────────────
 
-col_title, col_btn = st.columns([4, 1])
-with col_title:
-    st.markdown("<h1 style='color:white;margin:0'>💰 מעקב פיננסי</h1>", unsafe_allow_html=True)
-    if data:
-        updated = data.get("scrapedAt","")[:10]
-        st.markdown(f"<p class='sub'>עדכון אחרון: {updated}</p>", unsafe_allow_html=True)
-with col_btn:
-    if st.button("🔄 עדכן נתונים"):
-        with st.spinner("מתחבר ללאומי..."):
-            ok = run_scraper()
-        if ok:
-            st.success("✅ עודכן!")
-            st.rerun()
-        else:
-            st.error("❌ שגיאה")
+st.markdown("<h1 style='color:white;margin:0'>💰 מעקב פיננסי</h1>", unsafe_allow_html=True)
+if data:
+    updated = data.get("scrapedAt","")[:10]
+    st.markdown(f"<p class='sub'>עדכון אחרון: {updated} | מתעדכן אוטומטית כל בוקר 08:00</p>", unsafe_allow_html=True)
 
 if not data:
-    st.info("לחץ 'עדכן נתונים' כדי להתחיל")
+    st.info("הנתונים יטענו אוטומטית מחר בבוקר. אם זה דחוף, הרץ את הסקריפר מהמחשב שלך.")
     st.stop()
 
 df = parse(data)
