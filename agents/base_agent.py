@@ -2,7 +2,7 @@ import anthropic
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 class BaseAgent:
     def __init__(self, name: str, role: str, system_prompt: str):

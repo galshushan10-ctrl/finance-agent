@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv(override=True)
+
 from agents import ScraperAgent, AnalystAgent, TelegramAgent
 from agents.recurring_summary import build_recurring_summary, format_recurring_telegram
 
