@@ -2,7 +2,7 @@ name: דוח פיננסי יומי
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # 08:00 שעון ישראל — אחרי שה-Mac כבר שלף ודחף
+    - cron: '0 6 * * *'  # 08:00 שעון ישראל
   workflow_dispatch:
 
 jobs:
@@ -12,13 +12,41 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - run: pip install anthropic python-dotenv requests
+      - name: התקן תלויות Node
+        run: npm install
 
-      - name: שלח דוח יומי
+      - name: התקן תלויות Python
+        run: pip install anthropic python-dotenv requests
+
+      - name: התקן Playwright + תלויות מערכת
+        run: |
+          npx playwright install chromium
+          npx playwright install-deps chromium
+
+      - name: שלוף נתונים מלאומי
+        env:
+          LEUMI_USERNAME: ${{ secrets.LEUMI_USERNAME }}
+          LEUMI_PASSWORD: ${{ secrets.LEUMI_PASSWORD }}
+          CI: true
+        run: node scrape.mjs
+
+      - name: שמור נתונים לגיטהאב
+        run: |
+          git config user.name "finance-bot"
+          git config user.email "bot@finance.local"
+          git add transactions.json
+          git diff --staged --quiet || git commit -m "update transactions $(date +%Y-%m-%d)"
+          git push
+
+      - name: שלח דוח לטלגרם ווואטסאפ
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

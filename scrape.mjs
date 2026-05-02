@@ -13,10 +13,21 @@ if (!credentials.username || !credentials.password) {
 
 console.log('🔄 מתחבר ללאומי...');
 
+const isCI = process.env.CI === 'true';
+
 const scraper = createScraper({
   companyId: CompanyTypes.leumi,
-  startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 5, 1), // 6 חודשים אחורה
+  startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 5, 1),
   showBrowser: false,
+  puppeteerConfig: {
+    args: isCI ? [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--single-process',
+    ] : [],
+  },
 });
 
 try {
