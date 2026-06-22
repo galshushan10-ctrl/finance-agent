@@ -1,4 +1,5 @@
 anthropic
+composio-anthropic
 python-dotenv
 streamlit
 plotly
